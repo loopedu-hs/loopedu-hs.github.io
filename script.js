@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cols = 24;
   const rows = 18;
   const cell = 20;
-  const tickMs = 130;
+  const tickMs = 160;
   const directions = {
     up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 }
   };
@@ -79,7 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function setStatus(message) { statusEl.textContent = message; }
   function setDirection(next) {
-    if (!next || (direction.x + next.x === 0 && direction.y + next.y === 0)) return;
+    const reference = queuedDirection || direction;
+    if (!next || (reference.x + next.x === 0 && reference.y + next.y === 0)) return;
     queuedDirection = { ...next };
   }
   function spawnResurrection() {
@@ -115,27 +116,55 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(message || "게임 오버! 재시작 버튼으로 다시 도전하세요.");
     draw();
   }
-  function impactEnemy() {
+  function respawnSnake() {
+    const path = [];
+    for (let y = 0; y < rows; y += 1) {
+      const columns = y % 2 === 0 ? Array.from({ length: cols }, (_, x) => x) : Array.from({ length: cols }, (_, x) => cols - 1 - x);
+      columns.forEach((x) => path.push({ x, y }));
+    }
+    const length = snake.length;
+    if (length >= path.length) {
+      gameOver("게임 공간이 가득 차 더 움직일 수 없습니다.");
+      return;
+    }
+    let start = 0;
+    for (let candidate = 0; candidate <= path.length - length - 1; candidate += 1) {
+      const segment = path.slice(candidate, candidate + length);
+      const next = path[candidate + length];
+      const blocked = segment.some((part) => enemies.some((enemy) => sameCell(enemy, part))) || enemies.some((enemy) => sameCell(enemy, next));
+      if (!blocked) { start = candidate; break; }
+    }
+    const segment = path.slice(start, start + length).reverse();
+    const head = segment[0];
+    const next = path[start + length];
+    snake = segment;
+    direction = { x: next.x - head.x, y: next.y - head.y };
+    queuedDirection = { ...direction };
+  }
+  function impactCollision(gameOverMessage) {
     if (elapsed < invulnerableUntil) return false;
     if (lives > 0) {
       lives -= 1;
       invulnerableUntil = elapsed + 1;
-      snake = [{ x: 12, y: 9 }, { x: 11, y: 9 }, { x: 10, y: 9 }];
-      direction = { ...directions.right };
-      queuedDirection = { ...direction };
+      respawnSnake();
       setStatus("부활아이템을 사용해 계속합니다.");
       updateHud();
       return true;
     }
-    gameOver("게임 오버! 적과 부딪혔습니다.");
+    gameOver(gameOverMessage);
     return true;
   }
+  function impactEnemy() { return impactCollision("게임 오버! 적과 부딪혔습니다."); }
   function step() {
     direction = queuedDirection;
     const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
     const outside = head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows;
     const selfHit = snake.some((part) => sameCell(part, head));
-    if (outside || selfHit) { gameOver("게임 오버! 벽 또는 몸에 부딪혔습니다."); return; }
+    if (outside || selfHit) {
+      const collisionHandled = impactCollision("게임 오버! 벽 또는 몸에 부딪혔습니다.");
+      if (!collisionHandled && running) respawnSnake();
+      return;
+    }
     const enemyHit = enemies.some((enemy) => Math.hypot(enemy.x - head.x, enemy.y - head.y) <= 0.55);
     if (enemyHit && impactEnemy()) return;
     snake.unshift(head);
@@ -158,16 +187,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const y = item.y * cell;
     if (radius) { ctx.beginPath(); ctx.arc(x + cell / 2, y + cell / 2, radius, 0, Math.PI * 2); ctx.fill(); } else ctx.fillRect(x + 2, y + 2, cell - 4, cell - 4);
   }
+  function drawMonster(item) {
+    const x = item.x * cell;
+    const y = item.y * cell;
+    ctx.fillStyle = "#c76b7e";
+    ctx.beginPath();
+    ctx.moveTo(x + 3, y + 17);
+    ctx.lineTo(x + 3, y + 8);
+    ctx.lineTo(x + 6, y + 3);
+    ctx.lineTo(x + 9, y + 7);
+    ctx.lineTo(x + 12, y + 3);
+    ctx.lineTo(x + 17, y + 8);
+    ctx.lineTo(x + 17, y + 17);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#163a4a";
+    ctx.beginPath();
+    ctx.arc(x + 8, y + 10, 1.5, 0, Math.PI * 2);
+    ctx.arc(x + 13, y + 10, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(x + 7, y + 14, 7, 1.5);
+  }
+  function drawHeart(item) {
+    const x = item.x * cell;
+    const y = item.y * cell;
+    ctx.fillStyle = "#b95c8a";
+    ctx.beginPath();
+    ctx.moveTo(x + 10, y + 17);
+    ctx.bezierCurveTo(x + 8, y + 15, x + 3, y + 12, x + 3, y + 8);
+    ctx.bezierCurveTo(x + 3, y + 4, x + 8, y + 3, x + 10, y + 6);
+    ctx.bezierCurveTo(x + 12, y + 3, x + 17, y + 4, x + 17, y + 8);
+    ctx.bezierCurveTo(x + 17, y + 12, x + 12, y + 15, x + 10, y + 17);
+    ctx.fill();
+    ctx.strokeStyle = "#f3f8fa";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
   function draw() {
-    ctx.fillStyle = "#20231f";
+    ctx.fillStyle = "#163a4a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = "rgba(247,246,242,.06)";
+    ctx.strokeStyle = "rgba(243,248,250,.1)";
     for (let x = 0; x <= cols; x += 1) { ctx.beginPath(); ctx.moveTo(x * cell, 0); ctx.lineTo(x * cell, canvas.height); ctx.stroke(); }
     for (let y = 0; y <= rows; y += 1) { ctx.beginPath(); ctx.moveTo(0, y * cell); ctx.lineTo(canvas.width, y * cell); ctx.stroke(); }
-    drawCell(food, "#d97757", 6);
-    if (resurrection) { drawCell(resurrection, "#b69bd8", 7); drawCell({ x: resurrection.x, y: resurrection.y - .15 }, "#f7f6f2", 2); }
-    enemies.forEach((enemy) => drawCell(enemy, "#e5a08b", 6));
-    snake.forEach((part, index) => drawCell(part, index === 0 ? "#f2c18d" : "#b8d8ba", 7));
+    drawCell(food, "#e5a85b", 6);
+    if (resurrection) drawHeart(resurrection);
+    enemies.forEach(drawMonster);
+    snake.forEach((part, index) => drawCell(part, index === 0 ? "#e6c46a" : "#75b9a6", 7));
   }
   function loop(now) {
     if (!running) return;
@@ -207,14 +272,29 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(paused ? "일시정지했습니다." : "게임을 계속합니다.");
     lastFrame = performance.now();
   }
+  function restartGame() {
+    if (running) {
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("loop-snake-high-score", String(highScore));
+      }
+      running = false;
+      paused = false;
+      cancelAnimationFrame(animationId);
+    }
+    startGame();
+  }
   document.addEventListener("keydown", (event) => {
     const keyMap = { ArrowUp: "up", w: "up", W: "up", ArrowDown: "down", s: "down", S: "down", ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right" };
     if (keyMap[event.key]) { event.preventDefault(); setDirection(directions[keyMap[event.key]]); }
     if (event.key === " ") { event.preventDefault(); togglePause(); }
   });
-  document.querySelectorAll("[data-direction]").forEach((button) => button.addEventListener("click", () => setDirection(directions[button.dataset.direction])));
+  document.querySelectorAll("[data-direction]").forEach((button) => button.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    setDirection(directions[button.dataset.direction]);
+  }, { passive: false }));
   startButton.addEventListener("click", startGame);
   pauseButton.addEventListener("click", togglePause);
-  restartButton.addEventListener("click", startGame);
+  restartButton.addEventListener("click", restartGame);
   resetState();
 });

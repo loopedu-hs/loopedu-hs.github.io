@@ -1,10 +1,10 @@
 :root {
   color-scheme: light;
-  --ink: #1f1f1d;
-  --muted: #6e6d68;
-  --paper: #f7f6f2;
-  --accent: #d97757;
-  --line: #deddd7;
+  --ink: #19324d;
+  --muted: #5b7184;
+  --paper: #f3f8fa;
+  --accent: #2a7f86;
+  --line: #d6e3e8;
   font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -42,7 +42,7 @@ button:hover:not(:disabled), button:focus-visible { background: var(--accent); b
 button:disabled { cursor: not-allowed; opacity: .4; }
 .mobile-controls { display: grid; gap: .35rem; justify-items: center; margin: 1.25rem auto .5rem; max-width: 13rem; }
 .mobile-controls > div { display: flex; gap: .35rem; }
-.mobile-controls button { border-radius: .55rem; min-height: 2.8rem; min-width: 2.8rem; padding: .4rem; }
+.mobile-controls button { border-radius: .55rem; min-height: 2.8rem; min-width: 2.8rem; padding: .4rem; touch-action: none; }
 .game-note { color: var(--muted); font-size: .82rem; margin: 1.25rem 0 0; }
 .site-footer { color: var(--muted); margin: 0 auto; max-width: 1120px; padding: 2rem; }
 
