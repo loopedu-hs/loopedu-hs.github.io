@@ -14,7 +14,7 @@ body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.6;
 a { color: inherit; }
 .site-header { align-items: center; display: flex; justify-content: space-between; margin: 0 auto; max-width: 1120px; padding: 1.5rem 2rem; }
 .brand { font-weight: 700; text-decoration: none; }
-nav { display: flex; gap: 1.5rem; }
+nav { display: flex; flex-wrap: wrap; gap: 1.5rem; }
 nav a { color: var(--muted); font-size: .9rem; text-decoration: none; }
 nav a:hover, nav a:focus-visible { color: var(--accent); }
 main { margin: 0 auto; max-width: 1120px; padding: 0 2rem; }
@@ -26,18 +26,43 @@ h2 { font-size: clamp(2rem, 4vw, 3.5rem); }
 .hero-copy { color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.35rem); margin-top: 2rem; }
 .content-section { border-top: 1px solid var(--line); max-width: 720px; padding: 5rem 0; }
 .content-section > p:not(.eyebrow) { color: var(--muted); margin: 1.5rem 0 0; }
-.learning-card, .game-placeholder { border: 1px solid var(--line); margin-top: 2rem; padding: 1.5rem; }
+.learning-card, .game-shell { border: 1px solid var(--line); margin-top: 2rem; padding: 1.5rem; }
 .learning-card { display: flex; gap: 1rem; justify-content: space-between; }
 .learning-card span { color: var(--muted); }
-.game-placeholder { color: var(--muted); min-height: 8rem; }
+.game-stats { display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 1rem; }
+.game-stats div { display: grid; gap: .2rem; }
+.game-stats span { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+.game-stats strong { font-size: 1.35rem; }
+.game-board-wrap { background: #20231f; border-radius: .35rem; overflow: hidden; }
+#snake-canvas { display: block; height: auto; max-width: 100%; width: 100%; }
+.game-status { color: var(--muted); min-height: 1.6em; }
+.game-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+button { background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; color: #fff; cursor: pointer; font: inherit; padding: .65rem 1.1rem; }
+button:hover:not(:disabled), button:focus-visible { background: var(--accent); border-color: var(--accent); }
+button:disabled { cursor: not-allowed; opacity: .4; }
+.mobile-controls { display: grid; gap: .35rem; justify-items: center; margin: 1.25rem auto .5rem; max-width: 13rem; }
+.mobile-controls > div { display: flex; gap: .35rem; }
+.mobile-controls button { border-radius: .55rem; min-height: 2.8rem; min-width: 2.8rem; padding: .4rem; }
+.game-note { color: var(--muted); font-size: .82rem; margin: 1.25rem 0 0; }
 .site-footer { color: var(--muted); margin: 0 auto; max-width: 1120px; padding: 2rem; }
 
 @media (max-width: 767px) {
   .site-header, main { padding-left: 1.25rem; padding-right: 1.25rem; }
   .site-header { align-items: flex-start; gap: 1rem; }
-  nav { flex-wrap: wrap; gap: .75rem 1rem; justify-content: flex-end; }
+  nav { gap: .75rem 1rem; justify-content: flex-end; }
   .hero { min-height: 65vh; padding-top: 10vh; }
   .learning-card { align-items: flex-start; flex-direction: column; }
+  .game-shell { padding: 1rem; }
+  .game-stats { gap: .5rem; }
+}
+
+@media (min-width: 768px) and (max-width: 1120px) {
+  .site-header, main { padding-left: 2.5rem; padding-right: 2.5rem; }
+}
+
+@media (min-width: 1440px) {
+  .site-header, main, .site-footer { max-width: 1200px; }
+  .hero { padding-top: 16vh; }
 }
 
 @media (prefers-reduced-motion: reduce) {

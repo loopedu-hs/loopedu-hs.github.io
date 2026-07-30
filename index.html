@@ -12,14 +12,16 @@
     <header class="site-header">
       <a class="brand" href="#top" aria-label="홈으로 이동">교육생</a>
       <nav aria-label="주요 메뉴">
-        <a href="#about">소개</a>
-        <a href="#learning">배움</a>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
         <a href="#games">Games</a>
+        <a href="#contact">Contact</a>
       </nav>
     </header>
 
     <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
+      <section id="home" class="hero" aria-labelledby="hero-title">
         <p class="eyebrow">BACKEND DEVELOPMENT</p>
         <h1 id="hero-title">배우고, 만들고,<br>다음 단계로.</h1>
         <p class="hero-copy">교육생으로서 이론을 실습으로 연결하며<br>단단한 웹 경험을 만들어가고 있습니다.</p>
@@ -31,9 +33,9 @@
         <p>백엔드 개발을 공부하는 교육생입니다. 확인된 경험과 배움만 차분하게 기록합니다.</p>
       </section>
 
-      <section id="learning" class="content-section" aria-labelledby="learning-title">
-        <p class="eyebrow">LEARNING</p>
-        <h2 id="learning-title">Loop 엔지니어링 교육</h2>
+      <section id="experience" class="content-section" aria-labelledby="experience-title">
+        <p class="eyebrow">EXPERIENCE</p>
+        <h2 id="experience-title">Loop 엔지니어링 교육</h2>
         <div class="learning-card">
           <span>2026.07.30</span>
           <strong>오전 이론 · 오후 실습</strong>
@@ -43,8 +45,34 @@
       <section id="games" class="content-section games" aria-labelledby="games-title">
         <p class="eyebrow">GAMES</p>
         <h2 id="games-title">잠시 쉬어가세요.</h2>
-        <p>게임 공간을 준비하고 있습니다. 지렁이 게임은 다음 루프에서 구현합니다.</p>
-        <div class="game-placeholder" role="status">Coming soon</div>
+        <p>지렁이를 움직여 먹이를 모으고, 적을 피해 오래 살아남으세요.</p>
+        <div class="game-shell" data-game>
+          <div class="game-stats" aria-label="게임 상태">
+            <div><span>점수</span><strong id="score">0</strong></div>
+            <div><span>최고 점수</span><strong id="high-score">0</strong></div>
+            <div><span>목숨</span><strong id="lives">0</strong></div>
+          </div>
+          <div class="game-board-wrap">
+            <canvas id="snake-canvas" width="480" height="360" aria-label="지렁이 게임 화면"></canvas>
+          </div>
+          <p id="game-status" class="game-status" role="status">시작 버튼을 눌러 게임을 시작하세요.</p>
+          <div class="game-actions">
+            <button id="start-game" type="button">시작</button>
+            <button id="pause-game" type="button" disabled>일시정지</button>
+            <button id="restart-game" type="button" disabled>재시작</button>
+          </div>
+          <div class="mobile-controls" aria-label="모바일 게임 조작">
+            <button type="button" data-direction="up" aria-label="위로 이동">↑</button>
+            <div><button type="button" data-direction="left" aria-label="왼쪽 이동">←</button><button type="button" data-direction="down" aria-label="아래로 이동">↓</button><button type="button" data-direction="right" aria-label="오른쪽 이동">→</button></div>
+          </div>
+          <p class="game-note">방향키·WASD·화면 버튼으로 조작합니다. 부활아이템은 5초마다 나타납니다.</p>
+        </div>
+      </section>
+
+      <section id="contact" class="content-section" aria-labelledby="contact-title">
+        <p class="eyebrow">CONTACT</p>
+        <h2 id="contact-title">연락처</h2>
+        <p>개인 연락처는 비공개로 유지합니다.</p>
       </section>
     </main>
 
