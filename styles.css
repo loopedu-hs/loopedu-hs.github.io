@@ -1,0 +1,45 @@
+:root {
+  color-scheme: light;
+  --ink: #1f1f1d;
+  --muted: #6e6d68;
+  --paper: #f7f6f2;
+  --accent: #d97757;
+  --line: #deddd7;
+  font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.6; }
+a { color: inherit; }
+.site-header { align-items: center; display: flex; justify-content: space-between; margin: 0 auto; max-width: 1120px; padding: 1.5rem 2rem; }
+.brand { font-weight: 700; text-decoration: none; }
+nav { display: flex; gap: 1.5rem; }
+nav a { color: var(--muted); font-size: .9rem; text-decoration: none; }
+nav a:hover, nav a:focus-visible { color: var(--accent); }
+main { margin: 0 auto; max-width: 1120px; padding: 0 2rem; }
+.hero { min-height: 72vh; padding: 14vh 0 8rem; }
+.eyebrow { color: var(--accent); font-size: .72rem; font-weight: 700; letter-spacing: .14em; margin: 0 0 1rem; }
+h1, h2 { letter-spacing: -.045em; line-height: 1.08; margin: 0; }
+h1 { font-size: clamp(3.5rem, 9vw, 7.8rem); max-width: 850px; }
+h2 { font-size: clamp(2rem, 4vw, 3.5rem); }
+.hero-copy { color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.35rem); margin-top: 2rem; }
+.content-section { border-top: 1px solid var(--line); max-width: 720px; padding: 5rem 0; }
+.content-section > p:not(.eyebrow) { color: var(--muted); margin: 1.5rem 0 0; }
+.learning-card, .game-placeholder { border: 1px solid var(--line); margin-top: 2rem; padding: 1.5rem; }
+.learning-card { display: flex; gap: 1rem; justify-content: space-between; }
+.learning-card span { color: var(--muted); }
+.game-placeholder { color: var(--muted); min-height: 8rem; }
+.site-footer { color: var(--muted); margin: 0 auto; max-width: 1120px; padding: 2rem; }
+
+@media (max-width: 767px) {
+  .site-header, main { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .site-header { align-items: flex-start; gap: 1rem; }
+  nav { flex-wrap: wrap; gap: .75rem 1rem; justify-content: flex-end; }
+  .hero { min-height: 65vh; padding-top: 10vh; }
+  .learning-card { align-items: flex-start; flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
